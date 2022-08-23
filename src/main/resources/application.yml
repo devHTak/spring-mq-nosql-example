@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: redis-example
+  redis:
+    host: localhost
+    port: 6379
+server:
+  port: 8080
+  servlet:
+    context-path: /redis-example
+
