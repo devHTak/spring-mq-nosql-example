@@ -1,2 +1,32 @@
-package com.example.cart.entity;public class Member {
+package com.example.cart.entity;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
+
+@RedisHash("member")
+public class Member {
+    @Id
+    private String id;
+
+    private String name;
+
+    public Member(String name) {
+        this.name = name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
