@@ -1,27 +1,25 @@
 package com.example.log.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.io.FileWriter;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Date;
-import java.util.UUID;
+import java.util.List;
 
 @Service
-public class WasLogService {
+public class WasLogListService {
     private static final String LOG_FILE_NAME_PREFIX = "./waslog";
-    private static final String KEY_WAS_LOG = "was:log";
+    private static final String KEY_WAS_LOG = "was:log:list";
     private final RedisTemplate<String, String> redisTemplate;
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
 
     @Autowired
-    public WasLogService(RedisTemplate<String, String> redisTemplate) {
+    public WasLogListService(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
@@ -29,8 +27,8 @@ public class WasLogService {
      * 레디스에 로그 기록
      */
     public void log(String log) {
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        valueOperations.set(KEY_WAS_LOG, getLog(log));
+        ListOperations<String, String> listOperations = redisTemplate.opsForList();
+        listOperations.rightPush(KEY_WAS_LOG, getLog(log));
     }
 
     private String getLog(String log) {
@@ -42,11 +40,12 @@ public class WasLogService {
                 .toString();
     }
 
-    public String writeLog() {
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        String log = valueOperations.get(KEY_WAS_LOG);
+    public long writeLog() {
+        ListOperations<String, String> listOperations = redisTemplate.opsForList();
+        List<String> range = listOperations.range(KEY_WAS_LOG, 0, -1);
+        listOperations.getOperations().delete(KEY_WAS_LOG);
 
-        return writeFile(log);
+        return range.stream().map(log -> writeFile(log)).count();
     }
 
     private String writeFile(String log) {

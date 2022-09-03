@@ -7,7 +7,8 @@
   - 레디스에 로그 기록
   - 기록된 로그를 파일로 저장
 
-- 구현 (편의를 위해 WasLogService에 LogWriter, LogReceiver 기능 구현)
-  - was.log 키에 문자열 데이터로 로그 저장: LogWriter
-  - 로그 파일 생성 프로그램에서 레디스에 저장된 로그를 5초마다 읽어서 파일로 저장
-  - 파일로 저장한 데이터는 레디스에서 제거: LogReceiver
+- 구현 
+  - WasLogService
+    - String 형태로 log를 redis에 저장하고, 읽어와 file 에 저장하는 형태
+  - WasLogListService
+    - List 형태로 log를 저장하여 key-value 용량을 줄일 수 있다.

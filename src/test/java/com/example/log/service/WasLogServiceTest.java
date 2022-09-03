@@ -1,16 +1,13 @@
 package com.example.log.service;
 
-import com.example.log.entity.WasLog;
-import com.example.log.repository.WasLogRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,28 +17,37 @@ class WasLogServiceTest {
     @Autowired
     private WasLogService wasLogService;
     @Autowired
-    private WasLogRepository wasLogRepository;
+    private WasLogListService wasLogListService;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+    private final String KEY_WAS_LOG = "was:log";
 
     @Test
-    @DisplayName("WAS LOG 데이터 저장 후 읽고 파일 저장")
-    void wasLogReadAndWrite() {
+    @DisplayName("WAS LOG 데이터를 String Type으로 저장 후 읽고 파일 저장")
+    void stringTypeWasLogReadAndWrite() {
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         // 로그 저장 확인
-        List<WasLog> logs = Arrays.asList(
-            new WasLog("WAS-1", "SERVER START", LocalDateTime.now()),
-            new WasLog("WAS-2", "SERVER START", LocalDateTime.now()),
-            new WasLog("WAS-1", "SERVER END", LocalDateTime.now()),
-            new WasLog("WAS-2", "SERVER END", LocalDateTime.now())
-        );
+        for(int i = 0; i < 5; i++) {
+            wasLogService.log("TEST" + i);
+            assertNotNull(valueOperations.get(KEY_WAS_LOG));
 
-        List<WasLog> results = logs.stream().map(log -> wasLogService.logWriter(log))
-                .collect(Collectors.toList());
+            String fileName = wasLogService.writeLog();
+            assertNotNull(fileName);
+        }
+    }
 
-        System.out.println(logs.size() + " " + results.size());
-        assertEquals(logs.size(), results.size());
+    @Test
+    @DisplayName("WAS LOG 데이터를 List Type으로 저장 후 읽고 파일 저장")
+    void listTypeWasLogReadAndWrite() {
+        ListOperations<String, String> listOperations = redisTemplate.opsForList();
+        int expected = 5;
+        // 로그 저장 확인
+        for(int i = 0; i < expected; i++) {
+            wasLogListService.log("TEST" + i);
+        }
 
-        // 쓰기 테스트
-        long writeResult = wasLogService.logReceiver();
-        assertEquals(logs.size(), writeResult);
+        long actual = wasLogListService.writeLog();
+        assertEquals(expected, actual);
     }
 
 }
