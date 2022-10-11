@@ -2,22 +2,22 @@
 
 #### 예제
 
-- com.example.log
+- com.example.redis.log
   - Redis Template 를 활용하여 log 성 데이터를 파일로 저장하는 client
   - String type / List type 사용
 
-- com.example.pageCount
+- com.example.redis.pageCount
   - Redis Template 활용하여 페이지 접속 시 total/pageId key 에 대한 increment 및 조회 기능
   - String type / hash type 사용
 
-- com.example.cart
+- com.example.redis.cart
   - Repository 를 사용하여 Item, Member, Cart 를 저장
 
-- com.example.viewCount
+- com.example.redis.viewCount
   - Redis Template 사용
   - bit 연산으로 페이지 ID - 회원 ID 방문했는 지 확인
 
-- com.example.item
+- com.example.redis.item
   - Redis 캐시로 사용
 
 #### 개념 정리
