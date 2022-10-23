@@ -1,6 +1,4 @@
-#### Spring 과 Kafka, Redis 연동 예제 정리
-
-##### Redis - Spring 연동 예제
+### Spring - Redis 연동
 
 - com.example.redis.log
   - Redis Template 를 활용하여 log 성 데이터를 파일로 저장하는 client
@@ -30,3 +28,8 @@
 #### 예제 출처
 
 - 책 이것이 레디스다 7장을 바탕으로 예제 구성
+
+### Spring - Kafka 연동
+
+- producer: kafka-producer
+- consumer: kafka-consumer
