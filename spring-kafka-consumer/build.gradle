@@ -16,6 +16,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'org.springframework.data:spring-data-hadoop:2.2.1.RELEASE'
+	implementation 'org.apache.kafka:connect-api:3.0.0'
+	implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.9.2'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
