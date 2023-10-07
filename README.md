@@ -18,6 +18,9 @@
 - com.example.redis.item
   - Redis 캐시로 사용
 
+- com.example.redis.redisson
+  - Redisson Client를 활용한 분산락 예제
+     
 #### 개념 정리
 
 - Redis 기본
